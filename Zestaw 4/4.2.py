@@ -20,13 +20,13 @@ def make_grid(rows, cols):
     upper_line = '+'
     lower_line = "|"
 
-    for i in range(rows):
+    for i in range(cols):
         upper_line += '---+'
         lower_line += '   |'
 
     s = upper_line + '\n'
 
-    for j in range(cols):
+    for j in range(rows):
         s += lower_line + '\n'
         s += upper_line + '\n'
 
@@ -36,7 +36,7 @@ print("Ruler: ")
 print(make_ruler(12))
 
 print("\nGrid: ")
-print(make_grid(4, 2))
+print(make_grid(2, 4))
 
 
 
