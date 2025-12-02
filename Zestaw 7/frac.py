@@ -65,7 +65,7 @@ class Frac:
     __radd__ = __add__              # int+frac
 
     def __sub__(self, other):   # frac1-frac2, frac-int
-        if isinstance(other, int):
+        if not isinstance(other, Frac):
             other = Frac(other)
 
         return Frac(self.x * other.y - other.x * self.y, self.y * other.y).normalize()
@@ -152,7 +152,7 @@ class TestFrac(unittest.TestCase):
     def test_repr(self):
         self.assertEqual(repr(self.f1), "Frac(2, 3)")
 
-    # --- Testy Valueerror ---
+    # --- Testy ValueError ---
 
     def test_zero_denominator(self):
         with self.assertRaises(ValueError):
@@ -164,23 +164,24 @@ class TestFrac(unittest.TestCase):
         with self.assertRaises(ValueError):
             Frac(1, "b")
 
-    # --- Testy operatorów porównania ---
+    # --- Testy porównań ---
 
     def test_eq_frac(self):
-        self.assertTrue(self.f1 == self.f1)
+        self.assertTrue(self.f1 == Frac(2, 3))
         self.assertFalse(self.f1 == self.f2)
 
     def test_neq_frac(self):
         self.assertTrue(self.f1 != self.f2)
-        self.assertFalse(self.f1 != self.f1)
+        self.assertFalse(self.f1 != Frac(2, 3))
 
     def test_lt_frac(self):
         self.assertTrue(self.f1 < self.f2)
 
     def test_le_frac(self):
         self.assertTrue(self.f1 <= self.f2)
+        self.assertTrue(self.f1 <= Frac(2, 3))
 
-    # --- Testy operacji arytmetycznych ---
+    # --- Testy działań arytmetycznych ---
 
     def test_add_frac(self):
         self.assertEqual(self.f1 + self.f2, Frac(17, 12))
@@ -197,7 +198,7 @@ class TestFrac(unittest.TestCase):
         self.assertEqual(1 - self.f1, Frac(1, 3))
 
     def test_mul_frac(self):
-        self.assertEqual(self.f1 * self.f2, Frac(6, 12))
+        self.assertEqual(self.f1 * self.f2, Frac(1, 2))
 
     def test_mul_int(self):
         self.assertEqual(self.f1 * 2, Frac(4, 3))
@@ -207,31 +208,31 @@ class TestFrac(unittest.TestCase):
         self.assertEqual(self.f1 / self.f2, Frac(8, 9))
 
     def test_div_int(self):
-        self.assertEqual(self.f1 / 2, Frac(2, 6))
-        self.assertEqual(2 / self.f1, Frac(6, 2))
+        self.assertEqual(self.f1 / 2, Frac(1, 3))
+        self.assertEqual(2 / self.f1, Frac(3, 1))
 
-    # --- TESTY FLOATÓW ---
+    # --- Testy floatów ---
 
     def test_float_cast(self):
-        self.assertEqual(float(Frac(1,2)), 0.5)
-        self.assertAlmostEqual(float(Frac(2,3)), 2/3)
+        self.assertEqual(float(Frac(1, 2)), 0.5)
+        self.assertAlmostEqual(float(Frac(2, 3)), 2/3)
 
     def test_float_in_constructor(self):
         self.assertEqual(Frac(0.75, 1), Frac(3, 4))
         self.assertEqual(Frac(1, 0.25), Frac(4, 1))
 
     def test_float_operations(self):
-        self.assertEqual(self.f1 + 0.5, Frac(2, 3) + Frac(1,2))
-        self.assertEqual(self.f1 * 0.5, Frac(2, 3) * Frac(1,2))
-        self.assertEqual(0.5 * self.f1, Frac(1,2) * Frac(2,3))
+        self.assertEqual(self.f1 + 0.5, Frac(2, 3) + Frac(1, 2))
+        self.assertEqual(self.f1 * 0.5, Frac(2, 3) * Frac(1, 2))
+        self.assertEqual(0.5 * self.f1, Frac(1, 2) * Frac(2, 3))
 
-    # --- OPERATORY JEDNOARGUMENTOWE ---
+    # --- Operatory jednoargumentowe ---
 
     def test_pos(self):
         self.assertEqual(+self.f1, self.f1)
 
-    def test_invert(self):
+    def test_neg(self):
         self.assertEqual(-self.f1, Frac(-2, 3))
 
-
-
+    def test_invert(self):
+        self.assertEqual(~self.f1, Frac(3, 2))
